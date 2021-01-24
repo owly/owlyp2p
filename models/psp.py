@@ -66,13 +66,14 @@ class pSp(nn.Module):
 	def forward(self, x, resize=True, latent_mask=None, input_code=False, randomize_noise=True,
 	            inject_latent=None, return_latents=False, alpha=None):
 		if input_code:
+			print(codes)
 			codes = x
 		else:
 			codes = self.encoder(x)
 			# normalize with respect to the center of an average face
 			if self.opts.start_from_latent_avg:
 				if self.opts.learn_in_w:
-					codes = codes + self.latent_avg.repeat(codes.shape[0], 1)
+					codes = codes + self.latent_avg.repeat(codes.shape[0], 1)					
 				else:
 					codes = codes + self.latent_avg.repeat(codes.shape[0], 1, 1)
 
@@ -88,6 +89,9 @@ class pSp(nn.Module):
 					codes[:, i] = 0
 
 		input_is_latent = not input_code
+		print("[codes]=")
+		print(codes)
+		print('input_is_latent:' + input_is_latent)
 		images, result_latent = self.decoder([codes],
 		                                     input_is_latent=input_is_latent,
 		                                     randomize_noise=randomize_noise,
